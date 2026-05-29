@@ -1,0 +1,6 @@
+{
+  "name": "المكتبة الرقمية الأكاديمية",
+  "description": "المكتبة الرقمية الأكاديمية لكلية الفنون والتصميم بجامعة طرابلس مع عرض الأعمال الإبداعية والمراجع.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

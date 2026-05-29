@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Authentication state helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+    
+    // Administrator access verification
+    function isAdmin() {
+      return isVerifiedUser() && (
+        request.auth.token.email == "faculty.of.fine.arts.23@gmail.com" ||
+        request.auth.token.email == "mohamed.egmia@gmail.com"
+      );
+    }
+    
+    // Type and structure validating helper for books
+    function isValidBook(data) {
+      return data.keys().hasAll(['id', 'title', 'author', 'tag', 'timestamp']) &&
+             data.keys().size() <= 8 &&
+             data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() <= 300 &&
+             data.author is string && data.author.size() <= 100 &&
+             data.tag is string && (data.tag in ["specialized", "general", "research", "projects"]) &&
+             data.timestamp is int;
+    }
+    
+    // Type and structure validating helper for artworks
+    function isValidArtwork(data) {
+      return data.keys().hasAll(['id', 'workTitle', 'studentName', 'supervisorName', 'year', 'imageUrl', 'timestamp']) &&
+             data.keys().size() <= 8 &&
+             data.id is string && data.id.size() <= 128 &&
+             data.workTitle is string && data.workTitle.size() <= 300 &&
+             data.studentName is string && data.studentName.size() <= 100 &&
+             data.supervisorName is string && data.supervisorName.size() <= 100 &&
+             data.year is string && data.year.size() <= 4 &&
+             data.imageUrl is string && data.imageUrl.size() <= 2083 &&
+             data.timestamp is int;
+    }
+
+    // Collection: books
+    match /books/{bookId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidBook(request.resource.data);
+      allow update: if isAdmin() && isValidBook(request.resource.data);
+      allow delete: if isAdmin();
+    }
+    
+    // Collection: artworks
+    match /artworks/{artworkId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidArtwork(request.resource.data);
+      allow update: if isAdmin() && isValidArtwork(request.resource.data);
+      allow delete: if isAdmin();
+    }
+  }
+}

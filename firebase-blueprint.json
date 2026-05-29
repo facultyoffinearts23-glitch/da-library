@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "books": {
+      "title": "Book",
+      "description": "An academic book, reference, research paper, or graduation project",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the book record"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the academic work or book"
+        },
+        "author": {
+          "type": "string",
+          "description": "Author name or student name"
+        },
+        "tag": {
+          "type": "string",
+          "enum": ["specialized", "general", "research", "projects"],
+          "description": "The category classification of the reference"
+        },
+        "hasFile": {
+          "type": "boolean",
+          "description": "Indicates if a file URL is provided"
+        },
+        "fileUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "The Google Drive or file view URL"
+        },
+        "year": {
+          "type": "string",
+          "description": "The publication or completion year"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Creation timestamp in epoch millis"
+        }
+      },
+      "required": ["id", "title", "author", "tag", "timestamp"]
+    },
+    "artworks": {
+      "title": "Artwork",
+      "description": "A student artistic or creative work shown in the showcase slide",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the artwork"
+        },
+        "workTitle": {
+          "type": "string",
+          "description": "The title of the creative work"
+        },
+        "studentName": {
+          "type": "string",
+          "description": "The student creator name"
+        },
+        "supervisorName": {
+          "type": "string",
+          "description": "The supervising professor's name"
+        },
+        "year": {
+          "type": "string",
+          "description": "The completion year of the work"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the artwork's image placeholder"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Creation timestamp in epoch millis"
+        }
+      },
+      "required": ["id", "workTitle", "studentName", "supervisorName", "year", "imageUrl", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/books/{bookId}": {
+      "schema": "books",
+      "description": "The collection of academic books, papers, and references"
+    },
+    "/artworks/{artworkId}": {
+      "schema": "artworks",
+      "description": "The collection of student artwork slides for the showcase slideshow"
+    }
+  }
+}
